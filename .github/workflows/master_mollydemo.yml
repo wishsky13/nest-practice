@@ -21,11 +21,6 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: npm install, build
-        run: |
-          npm install
-          npm run build
-
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
@@ -53,5 +48,9 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_81D15DEBF19D4AB2BA3D243A216D690D }}
           package: .
+      - name: npm install, build
+        run: |
+          npm install
+          npm run build
       - name: Start application
         run: npm run start:prod
