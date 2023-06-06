@@ -1,0 +1,38 @@
+<!-- login-success.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Success</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      // 清除 cookie 中的 token
+      document.cookie =
+        'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      // 導向回 /login 頁面
+      window.location.href = '/login';
+    </script>
+    <!-- 登入成功模板的 HTML 內容 -->
+    <div class="container">
+      <h1>Bye!</h1>
+    </div>
+  </body>
+</html>
