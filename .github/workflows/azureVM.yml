@@ -20,4 +20,8 @@ jobs:
 
       - name: Deploy to Azure VM
         run: |
+          echo "$AZURE_SSH_PRIVATE_KEY" > ssh_key.pem
+          chmod 400 ssh_key.pem
           ssh user@20.243.50.16 "cd ~/nest-practice && git pull && npm install && npm run build && pm2 restart molly-demo"
+        env:
+          AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
