@@ -17,22 +17,21 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 20
-      
-      - name: Deploy to Azure VM
+          
+      - name: Test Node
         run: |
           echo "$AZURE_SSH_PRIVATE_KEY" > ssh_key.pem
           chmod 400 ssh_key.pem
-          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "cd ~/nest-practice && sshpass -p '$SSH_PASSPHRASE' git pull"
+          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "node -v && git config --list && eval $(ssh-agent -s) && ssh-add ~/.ssh/id_rsa"
+        env:
+          AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
+      
+      - name: Deploy to Azure VM
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "cd ~/nest-practice && git pull"
         env:
           AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
           SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
-        
-      - name: Test Node
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "source ~/.bashrc && nvm -v && node -v"
-        env:
-          AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
-
           
       - name: Build
         run: |
