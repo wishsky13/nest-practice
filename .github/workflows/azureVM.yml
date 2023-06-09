@@ -29,8 +29,6 @@ jobs:
 
       - name: Deploy to Azure VM
         run: |
-          echo "$AZURE_SSH_PRIVATE_KEY" > ssh_key.pem
-          chmod 400 ssh_key.pem
           ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "cd ~/nest-practice && sshpass -p '$SSH_PASSPHRASE' git pull && npm i && npm run build"
         env:
           AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
@@ -38,8 +36,6 @@ jobs:
           
       - name: Restart Pm2
         run: |
-          echo "$AZURE_SSH_PRIVATE_KEY" > ssh_key.pem
-          chmod 400 ssh_key.pem
           ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "pm2 restart molly-demo"
         env:
           AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
