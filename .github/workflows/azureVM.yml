@@ -28,14 +28,7 @@ jobs:
           
       - name: Deploy to Azure VM
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "cd ~/nest-practice && git pull"
-        env:
-          AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
-          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
-          
-      - name: Build
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "npm i && npm run build"
+          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "cd ~/nest-practice && git pull && npm i && npm run build"
         env:
           AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
           SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
