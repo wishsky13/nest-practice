@@ -17,20 +17,24 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 20
-
+          
+      - name: Build 
+        run: npm run build
+        
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
+        
       - name: Deploy to Azure VM
+        run: |
+          rsync -avz --exclude='node_modules' ./ azureuser@mollydemo.japaneast.cloudapp.azure.com:~/nest-practice
+
+      - name: Restart Pm2
         run: |
           echo "$AZURE_SSH_PRIVATE_KEY" > ssh_key.pem
           chmod 400 ssh_key.pem
-          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@20.243.50.16 "node -v && cd ~/nest-practice && ls"
+          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "pm2 restart molly-demo"
         env:
           AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
-          
-      - name: Build
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@20.243.50.16 "cd ~/nest-practice && npm install && npm run build"
-      
-      - name: Restart Pm2
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@20.243.50.16 "pm2 restart molly-demo"
-  
+
