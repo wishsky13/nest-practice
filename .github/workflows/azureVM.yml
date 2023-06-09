@@ -22,7 +22,7 @@ jobs:
         run: |
           echo "$AZURE_SSH_PRIVATE_KEY" > ssh_key.pem
           chmod 400 ssh_key.pem
-          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "nvm install stable && node -v"
+          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "cd ~/nest-practice && ls && source ~/.bashrc && nvm install stable && node -v"
         env:
           AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
           
