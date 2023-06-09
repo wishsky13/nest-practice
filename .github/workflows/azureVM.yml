@@ -28,12 +28,14 @@ jobs:
         
       - name: Deploy to Azure VM
         run: |
-          rsync -avz --exclude='node_modules' ./ azureuser@mollydemo.japaneast.cloudapp.azure.com:~/nest-practice
+          echo "$AZURE_SSH_PRIVATE_KEY" > ssh_key.pem
+          chmod 400 ssh_key.pem
+          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "rsync -avz --exclude='.git' --exclude='node_modules' ./ azureuser@mollydemo.japaneast.cloudapp.azure.com:/nest-practice"
+        env:
+          AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
 
       - name: Restart Pm2
         run: |
-          echo "$AZURE_SSH_PRIVATE_KEY" > ssh_key.pem
-          chmod 400 ssh_key.pem
           ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "pm2 restart molly-demo"
         env:
           AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
