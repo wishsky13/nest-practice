@@ -17,21 +17,29 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 20
+        
+      - name: Test Node
+        run: |
+          echo "$AZURE_SSH_PRIVATE_KEY" > ssh_key.pem
+          chmod 400 ssh_key.pem
+          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "nvm install stable && node -v"
+        env:
+          AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
           
-      - name: Build 
-        run: npm install && npm run build
 
       - name: Deploy to Azure VM
         run: |
           echo "$AZURE_SSH_PRIVATE_KEY" > ssh_key.pem
           chmod 400 ssh_key.pem
-          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@20.243.50.16 "rsync -avz --exclude='.git' --exclude='node_modules' ./ azureuser@20.243.50.16:~/nest-practice"
+          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "cd ~/nest-practice && sshpass -p '$SSH_PASSPHRASE' git pull && npm i && npm run build"
         env:
           AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
-
+          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
+          
       - name: Restart Pm2
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@20.243.50.16 "pm2 restart molly-demo"
+          echo "$AZURE_SSH_PRIVATE_KEY" > ssh_key.pem
+          chmod 400 ssh_key.pem
+          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "pm2 restart molly-demo"
         env:
           AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
-
