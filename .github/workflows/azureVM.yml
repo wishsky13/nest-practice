@@ -22,6 +22,15 @@ jobs:
         run: |
           echo "$AZURE_SSH_PRIVATE_KEY" > ssh_key.pem
           chmod 400 ssh_key.pem
-          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@mollydemo.japaneast.cloudapp.azure.com "cd ~/nest-practice && npm install && npm run build && pm2 restart molly-demo"
+          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@20.243.50.16 "node -v && cd ~/nest-practice && git pull"
         env:
           AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
+          
+      - name: Build
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@20.243.50.16 "cd ~/nest-practice && npm install && npm run build"
+      
+      - name: Restart Pm2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@20.243.50.16 "pm2 restart molly-demo"
+  
