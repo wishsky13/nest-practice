@@ -25,7 +25,7 @@ jobs:
         run: |
           echo "$AZURE_SSH_PRIVATE_KEY" > ssh_key.pem
           chmod 400 ssh_key.pem
-          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@20.243.50.16 "rsync -avz --exclude='.git' --exclude='node_modules' ./ azureuser@20.243.50.16:/nest-practice"
+          ssh -o StrictHostKeyChecking=no -i ssh_key.pem azureuser@20.243.50.16 "rsync -avz --exclude='.git' --exclude='node_modules' ./ azureuser@20.243.50.16:~/nest-practice"
         env:
           AZURE_SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_PRIVATE_KEY }}
 
