@@ -32,7 +32,9 @@ export class MemberController {
   }
 
   @Post()
-  async createMember(@Body() member: Member): Promise<Member> {
+  async createMember(
+    @Body() member: Member,
+  ): Promise<{ id: number; account: string }> {
     return this.memberService.createMember(member);
   }
 

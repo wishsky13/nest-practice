@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { MemberService } from '../members/member.service';
 import { JwtService } from '@nestjs/jwt';
+import * as CryptoJS from 'crypto-js';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +19,12 @@ export class AuthService {
     account: string;
   }> {
     const user = await this.memberService.findMember(account);
-    if (user?.password !== pass) {
+    const secretKey = 'mollymoooo';
+    const decrypted = CryptoJS.AES.decrypt(pass, secretKey);
+    const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
+
+    const password = decryptedText ?? pass;
+    if (user?.password !== password) {
       throw new UnauthorizedException();
     }
     // const { password, ...result } = user;

@@ -49,6 +49,7 @@ exports.AuthService = void 0;
 var common_1 = require("@nestjs/common");
 var member_service_1 = require("../members/member.service");
 var jwt_1 = require("@nestjs/jwt");
+var CryptoJS = require("crypto-js");
 var AuthService = /** @class */ (function () {
     function AuthService(memberService, jwtService) {
         this.memberService = memberService;
@@ -56,14 +57,18 @@ var AuthService = /** @class */ (function () {
     }
     AuthService.prototype.signIn = function (account, pass) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, payload;
+            var user, secretKey, decrypted, decryptedText, password, payload;
             var _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, this.memberService.findMember(account)];
                     case 1:
                         user = _b.sent();
-                        if ((user === null || user === void 0 ? void 0 : user.password) !== pass) {
+                        secretKey = 'mollymoooo';
+                        decrypted = CryptoJS.AES.decrypt(pass, secretKey);
+                        decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
+                        password = decryptedText !== null && decryptedText !== void 0 ? decryptedText : pass;
+                        if ((user === null || user === void 0 ? void 0 : user.password) !== password) {
                             throw new common_1.UnauthorizedException();
                         }
                         payload = { sub: user.account, username: user.username };

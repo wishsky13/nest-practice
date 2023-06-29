@@ -8,6 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Member } from '../../entity/member.entity';
+import * as CryptoJS from 'crypto-js';
 
 @Injectable()
 export class MemberService {
@@ -24,9 +25,16 @@ export class MemberService {
     return members;
   }
 
-  async createMember(member: Member): Promise<Member> {
+  async createMember(member: Member): Promise<{ id: number; account: string }> {
     try {
-      return await this.memberRepository.save(member);
+      const secretKey = 'mollymoooo';
+      const decrypted = CryptoJS.AES.decrypt(member.password, secretKey);
+      const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
+      if (decryptedText) {
+        member.password = decryptedText;
+      }
+      await this.memberRepository.save(member);
+      return { id: member.id, account: member.account };
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY') {
         throw new ConflictException(
