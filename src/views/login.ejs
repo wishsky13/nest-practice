@@ -2,6 +2,7 @@
 <html>
   <head>
     <title><%- title %></title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -96,43 +97,50 @@
           </div>
         </form>
         <script>
-          document
-            .getElementById('loginForm')
-            .addEventListener('submit', function (event) {
-              event.preventDefault(); // 阻止表單的預設提交行為
+          var key = 'mollymoooo';
 
-              // 在這裡使用 JavaScript 進行登入請求，例如使用 AJAX 或 Fetch API
-              // 假設使用 Fetch API 發送 POST 請求到 '/login' API
-              const formData = {
-                account: document.getElementById('account').value,
-                password: document.getElementById('password').value,
-              };
-
-              // 轉換為 JSON 字串
-              const jsonString = JSON.stringify(formData);
-
-              fetch('/auth/login', {
+          async function login(jsonString) {
+            try {
+              const response = await fetch('/auth/login', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json', // 或 'application/x-www-form-urlencoded'
                 },
                 body: jsonString,
-              })
-                .then((response) => response.json())
-                .then((data) => {
-                  // 根據登入請求的回應進行判斷
-                  if (data?.username) {
-                    document.cookie = `token=${data?.access_token}; path=/;`;
-                    // 登入成功
-                    window.location.href = `/dashboard`; // 跳轉到 /dashboard 頁面
-                  } else {
-                    alert('登入失敗，請檢查用戶名和密碼！');
-                  }
-                })
-                .catch((error) => {
-                  console.error('登入請求失敗', error);
-                  alert('登入請求失敗');
-                });
+              });
+
+              const data = await response.json();
+
+              if (data?.username) {
+                document.cookie = `token=${data?.access_token}; path=/;`;
+                // 登入成功
+                window.location.href = `/dashboard`; // 跳轉到 /dashboard 頁面
+              } else {
+                alert('登入失敗，請檢查用戶名和密碼！');
+              }
+            } catch (error) {
+              console.error('登入請求失敗', error);
+              alert('登入請求失敗');
+            }
+          }
+          document
+            .getElementById('loginForm')
+            .addEventListener('submit', function (event) {
+              event.preventDefault(); // 阻止表單的預設提交行為
+
+              var passwordEncrypted = CryptoJS.AES.encrypt(
+                document.getElementById('password').value,
+                key,
+              );
+
+              const formData = {
+                account: document.getElementById('account').value,
+                password: `${passwordEncrypted}`,
+              };
+
+              // 轉換為 JSON 字串
+              const jsonString = JSON.stringify(formData);
+              login(jsonString);
             });
         </script>
       </div>

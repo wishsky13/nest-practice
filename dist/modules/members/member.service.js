@@ -53,6 +53,7 @@ var common_1 = require("@nestjs/common");
 var typeorm_1 = require("@nestjs/typeorm");
 var typeorm_2 = require("typeorm");
 var member_entity_1 = require("../../entity/member.entity");
+var CryptoJS = require("crypto-js");
 var MemberService = /** @class */ (function () {
     function MemberService(memberRepository) {
         this.memberRepository = memberRepository;
@@ -75,13 +76,21 @@ var MemberService = /** @class */ (function () {
     };
     MemberService.prototype.createMember = function (member) {
         return __awaiter(this, void 0, void 0, function () {
-            var error_1;
+            var secretKey, decrypted, decryptedText, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        secretKey = 'mollymoooo';
+                        decrypted = CryptoJS.AES.decrypt(member.password, secretKey);
+                        decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
+                        if (decryptedText) {
+                            member.password = decryptedText;
+                        }
                         return [4 /*yield*/, this.memberRepository.save(member)];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, { id: member.id, account: member.account }];
                     case 2:
                         error_1 = _a.sent();
                         if (error_1.code === 'ER_DUP_ENTRY') {
