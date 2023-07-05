@@ -31,6 +31,24 @@ export class LoginController {
     return { username: username };
   }
 
+  @Get('/employee-dashboard')
+  @Render('employee-dashboard') // 使用 login 模板渲染頁面
+  getEmployeeDashboardPage(
+    @Param('token') token: string,
+    @Param('username') username: string,
+  ) {
+    return { username: username };
+  }
+
+  @Get('/admin-dashboard')
+  @Render('admin-dashboard') // 使用 login 模板渲染頁面
+  getAdminDashboardPage(
+    @Param('token') token: string,
+    @Param('username') username: string,
+  ) {
+    return { username: username };
+  }
+
   @Get('/signup')
   @Render('signup') // 使用 login 模板渲染頁面
   getSignupPage() {

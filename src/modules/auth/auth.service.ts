@@ -17,24 +17,32 @@ export class AuthService {
     access_token: string;
     username: string;
     account: string;
+    role: number[];
   }> {
     const user = await this.memberService.findMember(account);
     const secretKey = 'mollymoooo';
     const decrypted = CryptoJS.AES.decrypt(pass, secretKey);
     const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
-
-    const password = decryptedText ?? pass;
+    const password = !decryptedText ? pass : decryptedText;
     if (user?.password !== password) {
       throw new UnauthorizedException();
     }
     // const { password, ...result } = user;
     // * Generate a JWT and return it here
-    const payload = { sub: user.account, username: user.username };
+    const payload = {
+      account: user.account,
+      username: user.username,
+      role: user.role
+        .split(',')
+        .map((i) => {
+          return Number(i);
+        })
+        .sort((a, b) => a - b),
+    };
     // instead of the user object
     return {
       access_token: await this.jwtService.signAsync(payload),
-      username: user.username,
-      account: user.account,
+      ...payload,
     };
   }
 }
