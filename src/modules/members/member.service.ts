@@ -25,7 +25,9 @@ export class MemberService {
     return members;
   }
 
-  async createMember(member: Member): Promise<{ id: number; account: string }> {
+  async createMember(
+    member: Member,
+  ): Promise<{ id: number; account: string; role: number[] }> {
     try {
       const secretKey = 'mollymoooo';
       const decrypted = CryptoJS.AES.decrypt(member.password, secretKey);
@@ -33,12 +35,44 @@ export class MemberService {
       if (decryptedText) {
         member.password = decryptedText;
       }
+      //check role
+      if (member?.role) {
+        member.role.split(',').forEach((i) => {
+          if (isNaN(Number(i))) {
+            throw new HttpException(
+              '註冊失敗：權限設定有誤，請檢查後重新註冊！',
+              HttpStatus.FORBIDDEN,
+            );
+          }
+        });
+      } else {
+        member.role = '2';
+      }
       await this.memberRepository.save(member);
-      return { id: member.id, account: member.account };
+      return {
+        id: member.id,
+        account: member.account,
+        role: member.role
+          .split(',')
+          .map((i) => {
+            return Number(i);
+          })
+          .sort((a, b) => a - b),
+      };
     } catch (error) {
-      if (error.code === 'ER_DUP_ENTRY') {
-        throw new ConflictException(
-          '註冊失敗：該帳號已經有人使用，請更換新的帳號名稱！',
+      if (error?.code) {
+        switch (error.code) {
+          case 'ER_DUP_ENTRY':
+            throw new ConflictException(
+              '註冊失敗：該帳號已經有人使用，請更換新的帳號名稱！',
+            );
+          default:
+            throw new HttpException(error.sqlMessage, HttpStatus.FORBIDDEN);
+        }
+      } else if (error) {
+        throw new HttpException(
+          '註冊失敗：權限設定有誤，請檢查後重新註冊！',
+          HttpStatus.FORBIDDEN,
         );
       } else {
         throw new InternalServerErrorException('註冊失敗！');

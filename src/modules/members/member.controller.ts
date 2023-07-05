@@ -41,7 +41,7 @@ export class MemberController {
   @UseGuards(AuthGuard)
   @Get('me')
   getProfile(@Request() req) {
-    return req.members;
+    return req.member;
   }
 
   // @Get(':id')

@@ -3,4 +3,5 @@ export class CreateMemberDto {
   public readonly username: string;
   public readonly password: string;
   public readonly account: string;
+  public readonly role: string;
 }

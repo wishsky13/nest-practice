@@ -15,4 +15,7 @@ export class Member {
 
   @Column({ unique: true })
   account: string;
+
+  @Column()
+  role: string;
 }
