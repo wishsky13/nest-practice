@@ -87,6 +87,43 @@
           window.location.href = '/login';
         }
       }
+
+      async function getMemberList(token) {
+        try {
+          const response = await fetch('/members?current=2&size=2', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.role[0] !== 1) {
+              alert('很抱歉，您沒有權限進入此頁！');
+              if (data.role.find((i) => i === 2)) {
+                window.location.href = '/employee-dashboard';
+              } else {
+                window.location.href = '/dashboard';
+              }
+            }
+            if (data?.username) {
+              const username = data.username;
+              const usernameElement = document.getElementById('username');
+              usernameElement.innerText = username;
+            } else {
+              alert('請求失敗，請重新登入！');
+              window.location.href = '/login';
+            }
+          } else {
+            throw new Error('請求失敗');
+          }
+        } catch (error) {
+          console.error('請求失敗', error);
+          window.location.href = '/login';
+        }
+      }
       // 讀取 cookie
       const cookies = document.cookie;
       // 將 cookie 字符串分割成鍵值對的陣列

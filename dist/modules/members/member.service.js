@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -58,25 +69,44 @@ var MemberService = /** @class */ (function () {
     function MemberService(memberRepository) {
         this.memberRepository = memberRepository;
     }
-    MemberService.prototype.getMembers = function () {
+    MemberService.prototype.getMembers = function (query) {
         return __awaiter(this, void 0, void 0, function () {
-            var members;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.memberRepository.find()];
+            var current, size, _a, members, total, totalPages, pagination, err_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 2, , 3]);
+                        current = query.current ? Number(query.current) : 1;
+                        size = query.size ? Number(query.size) : 15;
+                        return [4 /*yield*/, this.memberRepository.findAndCount({
+                                skip: (current - 1) * size,
+                                take: size, // 每頁筆數
+                            })];
                     case 1:
-                        members = _a.sent();
+                        _a = _b.sent(), members = _a[0], total = _a[1];
+                        // const members = await this.memberRepository.find();
                         members.forEach(function (member) {
                             delete member.password;
                         });
-                        return [2 /*return*/, members];
+                        totalPages = Math.ceil(total / size);
+                        pagination = {
+                            current: current,
+                            count: totalPages,
+                            size: size,
+                            last: total, // 總數據筆數
+                        };
+                        return [2 /*return*/, { members: members, page: pagination }];
+                    case 2:
+                        err_1 = _b.sent();
+                        throw new common_1.HttpException('取得失敗，請確認要求條件後再次申請！', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
     MemberService.prototype.createMember = function (member) {
         return __awaiter(this, void 0, void 0, function () {
-            var secretKey, decrypted, decryptedText, error_1;
+            var secretKey, decrypted, decryptedText, memberData, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -87,14 +117,44 @@ var MemberService = /** @class */ (function () {
                         if (decryptedText) {
                             member.password = decryptedText;
                         }
+                        //check role
+                        if (member === null || member === void 0 ? void 0 : member.role) {
+                            member.role.split(',').forEach(function (i) {
+                                if (isNaN(Number(i))) {
+                                    throw new common_1.HttpException('註冊失敗：權限設定有誤，請檢查後重新註冊！', common_1.HttpStatus.FORBIDDEN);
+                                }
+                            });
+                        }
+                        else {
+                            member.role = '2';
+                        }
                         return [4 /*yield*/, this.memberRepository.save(member)];
                     case 1:
-                        _a.sent();
-                        return [2 /*return*/, { id: member.id, account: member.account }];
+                        memberData = _a.sent();
+                        return [2 /*return*/, {
+                                id: memberData.id,
+                                account: memberData.account,
+                                username: memberData.username,
+                                role: memberData.role
+                                    .split(',')
+                                    .map(function (i) {
+                                    return Number(i);
+                                })
+                                    .sort(function (a, b) { return a - b; }),
+                                created_at: memberData.created_at,
+                            }];
                     case 2:
                         error_1 = _a.sent();
-                        if (error_1.code === 'ER_DUP_ENTRY') {
-                            throw new common_1.ConflictException('註冊失敗：該帳號已經有人使用，請更換新的帳號名稱！');
+                        if (error_1 === null || error_1 === void 0 ? void 0 : error_1.code) {
+                            switch (error_1.code) {
+                                case 'ER_DUP_ENTRY':
+                                    throw new common_1.ConflictException('註冊失敗：該帳號已經有人使用，請更換新的帳號名稱！');
+                                default:
+                                    throw new common_1.HttpException(error_1.sqlMessage, common_1.HttpStatus.FORBIDDEN);
+                            }
+                        }
+                        else if (error_1) {
+                            throw new common_1.HttpException('註冊失敗：權限設定有誤，請檢查後重新註冊！', common_1.HttpStatus.FORBIDDEN);
                         }
                         else {
                             throw new common_1.InternalServerErrorException('註冊失敗！');
@@ -108,7 +168,7 @@ var MemberService = /** @class */ (function () {
     MemberService.prototype.findMember = function (id) {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var Member, _b, err_1;
+            var Member, _b, err_2;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -129,9 +189,14 @@ var MemberService = /** @class */ (function () {
                         }
                         return [3 /*break*/, 6];
                     case 5:
-                        err_1 = _c.sent();
-                        throw new common_1.HttpException(err_1, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
-                    case 6: return [2 /*return*/, Member];
+                        err_2 = _c.sent();
+                        throw new common_1.HttpException(err_2, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+                    case 6: return [2 /*return*/, __assign(__assign({}, Member), { role: Member.role
+                                .split(',')
+                                .map(function (i) {
+                                return Number(i);
+                            })
+                                .sort(function (a, b) { return a - b; }) })];
                 }
             });
         });

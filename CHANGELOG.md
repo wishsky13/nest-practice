@@ -4,11 +4,18 @@ All notable changes to this project will be documented in this file.
 
 <!-- 以 master 為主 -->
 
+### [0.3.1] - 2023-07-11/ Molly
+
+- 更新 dto 與 entity
+- 新增 pagination
+- 更新 port 3000 to 8080
+
+### [0.3.0] - 2023-07-05/ Molly
+
+- 新增 member role 欄位
+- 新增 role 各字的 dashboard
+
 ### [0.2.0] - 2023-06-29/ Molly
 
 - 新增 登入與註冊密碼加密解密
 - 更新 前端頁面 call api function 使用 async await
-
-### [0.3.0] - 2023-07-05/ Molly
-- 新增 member role 欄位
-- 新增 role 各字的 dashboard

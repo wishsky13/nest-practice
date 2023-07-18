@@ -9,7 +9,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { MemberService } from './member.service';
-import { CreateMemberDto } from './dto/create-member.dto';
+import { CreateMemberDto } from './dto/member.dto';
+import { PageDto, PageQueryDto } from '../../dtos/page.dto';
 import { Member } from '../../entity/member.entity';
 import { AuthGuard } from '../auth/auth.guard';
 import { SetMetadata } from '@nestjs/common';
@@ -25,15 +26,18 @@ export class MemberController {
   // getAll(@Query() query: { limit: number; skip: number }) {
   //   return this.memberService.getMemberList(query);
   // }
-
+  @UseGuards(AuthGuard)
   @Get()
-  async getAllMembers(): Promise<Member[]> {
-    return this.memberService.getMembers();
+  async getAllMembers(@Query() query: PageQueryDto): Promise<{
+    members: Member[];
+    page: PageDto;
+  }> {
+    return this.memberService.getMembers(query);
   }
 
   @Post()
   async createMember(
-    @Body() member: Member,
+    @Body() member: CreateMemberDto,
   ): Promise<{ id: number; account: string }> {
     return this.memberService.createMember(member);
   }
