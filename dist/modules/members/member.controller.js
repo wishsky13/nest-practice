@@ -51,7 +51,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MemberController = exports.Public = exports.IS_PUBLIC_KEY = void 0;
 var common_1 = require("@nestjs/common");
 var member_service_1 = require("./member.service");
-var member_entity_1 = require("../../entity/member.entity");
+var member_dto_1 = require("./dto/member.dto");
+var page_dto_1 = require("../../dtos/page.dto");
 var auth_guard_1 = require("../auth/auth.guard");
 var common_2 = require("@nestjs/common");
 exports.IS_PUBLIC_KEY = 'isPublic';
@@ -65,10 +66,10 @@ var MemberController = /** @class */ (function () {
     // getAll(@Query() query: { limit: number; skip: number }) {
     //   return this.memberService.getMemberList(query);
     // }
-    MemberController.prototype.getAllMembers = function () {
+    MemberController.prototype.getAllMembers = function (query) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, this.memberService.getMembers()];
+                return [2 /*return*/, this.memberService.getMembers(query)];
             });
         });
     };
@@ -80,19 +81,21 @@ var MemberController = /** @class */ (function () {
         });
     };
     MemberController.prototype.getProfile = function (req) {
-        return req.members;
+        return req.member;
     };
     __decorate([
+        (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
         (0, common_1.Get)(),
+        __param(0, (0, common_1.Query)()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", []),
+        __metadata("design:paramtypes", [page_dto_1.PageQueryDto]),
         __metadata("design:returntype", Promise)
     ], MemberController.prototype, "getAllMembers", null);
     __decorate([
         (0, common_1.Post)(),
         __param(0, (0, common_1.Body)()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [member_entity_1.Member]),
+        __metadata("design:paramtypes", [member_dto_1.CreateMemberDto]),
         __metadata("design:returntype", Promise)
     ], MemberController.prototype, "createMember", null);
     __decorate([

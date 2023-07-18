@@ -18,6 +18,7 @@ export class AuthService {
     username: string;
     account: string;
     role: number[];
+    created_at: Date;
   }> {
     const user = await this.memberService.findMember(account);
     const secretKey = 'mollymoooo';
@@ -33,11 +34,11 @@ export class AuthService {
       account: user.account,
       username: user.username,
       role: user.role
-        .split(',')
         .map((i) => {
           return Number(i);
         })
         .sort((a, b) => a - b),
+      created_at: user.created_at,
     };
     // instead of the user object
     return {

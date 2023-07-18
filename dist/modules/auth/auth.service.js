@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -67,19 +78,25 @@ var AuthService = /** @class */ (function () {
                         secretKey = 'mollymoooo';
                         decrypted = CryptoJS.AES.decrypt(pass, secretKey);
                         decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
-                        password = decryptedText !== null && decryptedText !== void 0 ? decryptedText : pass;
+                        password = !decryptedText ? pass : decryptedText;
                         if ((user === null || user === void 0 ? void 0 : user.password) !== password) {
                             throw new common_1.UnauthorizedException();
                         }
-                        payload = { sub: user.account, username: user.username };
+                        payload = {
+                            account: user.account,
+                            username: user.username,
+                            role: user.role
+                                .map(function (i) {
+                                return Number(i);
+                            })
+                                .sort(function (a, b) { return a - b; }),
+                            created_at: user.created_at,
+                        };
                         _a = {};
                         return [4 /*yield*/, this.jwtService.signAsync(payload)];
                     case 2: 
                     // instead of the user object
-                    return [2 /*return*/, (_a.access_token = _b.sent(),
-                            _a.username = user.username,
-                            _a.account = user.account,
-                            _a)];
+                    return [2 /*return*/, __assign.apply(void 0, [(_a.access_token = _b.sent(), _a), payload])];
                 }
             });
         });

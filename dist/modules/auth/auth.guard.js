@@ -74,7 +74,7 @@ var AuthGuard = /** @class */ (function () {
                         payload = _b.sent();
                         // 💡 We're assigning the payload to the request object here
                         // so that we can access it in our route handlers
-                        request['members'] = payload;
+                        request['member'] = payload;
                         return [3 /*break*/, 4];
                     case 3:
                         _a = _b.sent();

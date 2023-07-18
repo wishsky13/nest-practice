@@ -32,6 +32,14 @@ var Member = /** @class */ (function () {
         (0, typeorm_1.Column)({ unique: true }),
         __metadata("design:type", String)
     ], Member.prototype, "account", void 0);
+    __decorate([
+        (0, typeorm_1.Column)(),
+        __metadata("design:type", String)
+    ], Member.prototype, "role", void 0);
+    __decorate([
+        (0, typeorm_1.CreateDateColumn)(),
+        __metadata("design:type", Date)
+    ], Member.prototype, "created_at", void 0);
     Member = __decorate([
         (0, typeorm_1.Entity)()
     ], Member);

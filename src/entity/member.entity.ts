@@ -1,4 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
 
 @Entity()
@@ -18,4 +23,7 @@ export class Member {
 
   @Column()
   role: string;
+
+  @CreateDateColumn()
+  public created_at?: Date;
 }

@@ -25,6 +25,12 @@ var LoginController = /** @class */ (function () {
     LoginController.prototype.getDashboardPage = function (token, username) {
         return { username: username };
     };
+    LoginController.prototype.getEmployeeDashboardPage = function (token, username) {
+        return { username: username };
+    };
+    LoginController.prototype.getAdminDashboardPage = function (token, username) {
+        return { username: username };
+    };
     LoginController.prototype.getSignupPage = function () {
         return {};
     };
@@ -49,6 +55,26 @@ var LoginController = /** @class */ (function () {
         __metadata("design:paramtypes", [String, String]),
         __metadata("design:returntype", void 0)
     ], LoginController.prototype, "getDashboardPage", null);
+    __decorate([
+        (0, common_1.Get)('/employee-dashboard'),
+        (0, common_1.Render)('employee-dashboard') // 使用 login 模板渲染頁面
+        ,
+        __param(0, (0, common_1.Param)('token')),
+        __param(1, (0, common_1.Param)('username')),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [String, String]),
+        __metadata("design:returntype", void 0)
+    ], LoginController.prototype, "getEmployeeDashboardPage", null);
+    __decorate([
+        (0, common_1.Get)('/admin-dashboard'),
+        (0, common_1.Render)('admin-dashboard') // 使用 login 模板渲染頁面
+        ,
+        __param(0, (0, common_1.Param)('token')),
+        __param(1, (0, common_1.Param)('username')),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [String, String]),
+        __metadata("design:returntype", void 0)
+    ], LoginController.prototype, "getAdminDashboardPage", null);
     __decorate([
         (0, common_1.Get)('/signup'),
         (0, common_1.Render)('signup') // 使用 login 模板渲染頁面

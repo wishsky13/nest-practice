@@ -27,7 +27,7 @@ var AuthModule = /** @class */ (function () {
                 jwt_1.JwtModule.register({
                     global: true,
                     secret: constants_1.jwtConstants.secret,
-                    signOptions: { expiresIn: '60s' },
+                    signOptions: { expiresIn: '30m' },
                 }),
             ],
             providers: [member_service_1.MemberService, auth_service_1.AuthService],

@@ -110,11 +110,22 @@
               });
 
               const data = await response.json();
-
+              console.log(data);
               if (data?.username) {
-                document.cookie = `token=${data?.access_token}; path=/;`;
                 // 登入成功
-                window.location.href = `/dashboard`; // 跳轉到 /dashboard 頁面
+                document.cookie = `token=${data?.access_token}; path=/;`;
+                // 跳轉到 /dashboard 頁面
+                switch (data.role[0]) {
+                  case 1:
+                    window.location.href = `/admin-dashboard`;
+                    break;
+                  case 2:
+                    window.location.href = `/employee-dashboard`;
+                    break;
+                  default:
+                    window.location.href = `/dashboard`;
+                    break;
+                }
               } else {
                 alert('登入失敗，請檢查用戶名和密碼！');
               }
