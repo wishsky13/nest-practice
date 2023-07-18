@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - 更新 dto 與 entity
 - 新增 pagination
+- 更新 port 3000 to 8080
 
 ### [0.3.0] - 2023-07-05/ Molly
 
