@@ -51,6 +51,11 @@ function bootstrap() {
                     app.setBaseViewsDir((0, path_1.join)(__dirname, 'views'));
                     app.setViewEngine('ejs');
                     app.engine('ejs', ejs.__express);
+                    app.enableCors({
+                        origin: true,
+                        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+                        credentials: true,
+                    });
                     return [4 /*yield*/, app.listen(8080)];
                 case 2:
                     _a.sent();

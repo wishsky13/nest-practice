@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 <!-- 以 master 為主 -->
 
+### [0.3.2] - 2023-07-18/ Molly
+
+- 更新 login 加入回覆 exp 
+- 更新 me 回覆欄位移除 iat, exp
+- 新增 cors 設定
+
 ### [0.3.1] - 2023-07-11/ Molly
 
 - 更新 dto 與 entity

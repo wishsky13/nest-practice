@@ -126,7 +126,7 @@ var MemberService = /** @class */ (function () {
                             });
                         }
                         else {
-                            member.role = '2';
+                            member.role = '3';
                         }
                         return [4 /*yield*/, this.memberRepository.save(member)];
                     case 1:

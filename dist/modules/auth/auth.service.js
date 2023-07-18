@@ -80,7 +80,7 @@ var AuthService = /** @class */ (function () {
                         decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
                         password = !decryptedText ? pass : decryptedText;
                         if ((user === null || user === void 0 ? void 0 : user.password) !== password) {
-                            throw new common_1.UnauthorizedException();
+                            throw new common_1.HttpException('登入失敗，帳號或密碼錯誤！', common_1.HttpStatus.FORBIDDEN);
                         }
                         payload = {
                             account: user.account,
@@ -96,7 +96,7 @@ var AuthService = /** @class */ (function () {
                         return [4 /*yield*/, this.jwtService.signAsync(payload)];
                     case 2: 
                     // instead of the user object
-                    return [2 /*return*/, __assign.apply(void 0, [(_a.access_token = _b.sent(), _a), payload])];
+                    return [2 /*return*/, __assign.apply(void 0, [(_a.access_token = _b.sent(), _a.expires_in = 1800, _a), payload])];
                 }
             });
         });

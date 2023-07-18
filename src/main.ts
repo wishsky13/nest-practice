@@ -10,7 +10,11 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, 'views'));
   app.setViewEngine('ejs');
   app.engine('ejs', ejs.__express);
-
+  app.enableCors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+});
   await app.listen(8080);
 }
 bootstrap();

@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { MemberService } from '../members/member.service';
 import { JwtService } from '@nestjs/jwt';
 import * as CryptoJS from 'crypto-js';
@@ -15,6 +20,7 @@ export class AuthService {
     pass: string,
   ): Promise<{
     access_token: string;
+    expires_in: number;
     username: string;
     account: string;
     role: number[];
@@ -26,7 +32,10 @@ export class AuthService {
     const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
     const password = !decryptedText ? pass : decryptedText;
     if (user?.password !== password) {
-      throw new UnauthorizedException();
+      throw new HttpException(
+        '登入失敗，帳號或密碼錯誤！',
+        HttpStatus.FORBIDDEN,
+      );
     }
     // const { password, ...result } = user;
     // * Generate a JWT and return it here
@@ -43,6 +52,7 @@ export class AuthService {
     // instead of the user object
     return {
       access_token: await this.jwtService.signAsync(payload),
+      expires_in: 1800,
       ...payload,
     };
   }

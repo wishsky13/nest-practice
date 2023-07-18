@@ -72,7 +72,7 @@ export class MemberService {
           }
         });
       } else {
-        member.role = '2';
+        member.role = '3';
       }
       const memberData = await this.memberRepository.save(member);
       return {

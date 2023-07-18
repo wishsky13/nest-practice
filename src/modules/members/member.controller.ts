@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Body,
   Controller,
@@ -22,10 +23,6 @@ export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
-  // @Get()
-  // getAll(@Query() query: { limit: number; skip: number }) {
-  //   return this.memberService.getMemberList(query);
-  // }
   @UseGuards(AuthGuard)
   @Get()
   async getAllMembers(@Query() query: PageQueryDto): Promise<{
@@ -45,7 +42,8 @@ export class MemberController {
   @UseGuards(AuthGuard)
   @Get('me')
   getProfile(@Request() req) {
-    return req.member;
+    const { iat, exp, ...userData } = req.member;
+    return userData;
   }
 
   // @Get(':id')

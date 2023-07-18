@@ -47,8 +47,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MemberController = exports.Public = exports.IS_PUBLIC_KEY = void 0;
+/* eslint-disable @typescript-eslint/no-unused-vars */
 var common_1 = require("@nestjs/common");
 var member_service_1 = require("./member.service");
 var member_dto_1 = require("./dto/member.dto");
@@ -62,10 +74,6 @@ var MemberController = /** @class */ (function () {
     function MemberController(memberService) {
         this.memberService = memberService;
     }
-    // @Get()
-    // getAll(@Query() query: { limit: number; skip: number }) {
-    //   return this.memberService.getMemberList(query);
-    // }
     MemberController.prototype.getAllMembers = function (query) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -81,7 +89,8 @@ var MemberController = /** @class */ (function () {
         });
     };
     MemberController.prototype.getProfile = function (req) {
-        return req.member;
+        var _a = req.member, iat = _a.iat, exp = _a.exp, userData = __rest(_a, ["iat", "exp"]);
+        return userData;
     };
     __decorate([
         (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
