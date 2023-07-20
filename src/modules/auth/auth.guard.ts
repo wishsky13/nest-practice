@@ -1,21 +1,41 @@
 import {
   CanActivate,
   ExecutionContext,
+  HttpException,
+  HttpStatus,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { Request } from 'express';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private readonly reflector: Reflector,
+    private jwtService: JwtService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
+      throw new UnauthorizedException();
+    }
+    try {
+      const decoded = this.jwtService.verify(token);
+      const userRoles = decoded.role;
+      // * 檢查權限
+      const roles = this.reflector.get<string[]>('roles', context.getHandler());
+      if (roles && !roles.some((role) => userRoles.includes(role))) {
+        throw new HttpException(
+          '權限不足！如有疑問請聯絡權限管理員。',
+          HttpStatus.FORBIDDEN,
+        );
+      }
+    } catch (err) {
       throw new UnauthorizedException();
     }
     try {

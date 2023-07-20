@@ -9,7 +9,7 @@ import { Exclude } from 'class-transformer';
 @Entity()
 export class Member {
   @PrimaryGeneratedColumn()
-  id?: number;
+  id: number;
 
   @Column()
   username: string;
@@ -25,5 +25,5 @@ export class Member {
   role: string;
 
   @CreateDateColumn()
-  public created_at?: Date;
+  public created_at: Date;
 }

@@ -95,7 +95,17 @@ var MemberService = /** @class */ (function () {
                             size: size,
                             last: total, // 總數據筆數
                         };
-                        return [2 /*return*/, { members: members, page: pagination }];
+                        return [2 /*return*/, {
+                                members: members.map(function (i) {
+                                    return __assign(__assign({}, i), { role: i.role
+                                            .split(',')
+                                            .map(function (i) {
+                                            return Number(i);
+                                        })
+                                            .sort(function (a, b) { return a - b; }) });
+                                }),
+                                page: pagination,
+                            }];
                     case 2:
                         err_1 = _b.sent();
                         throw new common_1.HttpException('取得失敗，請確認要求條件後再次申請！', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
@@ -121,7 +131,7 @@ var MemberService = /** @class */ (function () {
                         if (member === null || member === void 0 ? void 0 : member.role) {
                             member.role.split(',').forEach(function (i) {
                                 if (isNaN(Number(i))) {
-                                    throw new common_1.HttpException('註冊失敗：權限設定有誤，請檢查後重新註冊！', common_1.HttpStatus.FORBIDDEN);
+                                    throw new common_1.HttpException('註冊失敗：權限設定有誤，請檢查後重新註冊！', common_1.HttpStatus.NOT_ACCEPTABLE);
                                 }
                             });
                         }
@@ -150,11 +160,11 @@ var MemberService = /** @class */ (function () {
                                 case 'ER_DUP_ENTRY':
                                     throw new common_1.ConflictException('註冊失敗：該帳號已經有人使用，請更換新的帳號名稱！');
                                 default:
-                                    throw new common_1.HttpException(error_1.sqlMessage, common_1.HttpStatus.FORBIDDEN);
+                                    throw new common_1.HttpException(error_1.sqlMessage, common_1.HttpStatus.NOT_ACCEPTABLE);
                             }
                         }
                         else if (error_1) {
-                            throw new common_1.HttpException('註冊失敗：權限設定有誤，請檢查後重新註冊！', common_1.HttpStatus.FORBIDDEN);
+                            throw new common_1.HttpException('註冊失敗：權限設定有誤，請檢查後重新註冊！', common_1.HttpStatus.NOT_ACCEPTABLE);
                         }
                         else {
                             throw new common_1.InternalServerErrorException('註冊失敗！');
@@ -185,18 +195,102 @@ var MemberService = /** @class */ (function () {
                     case 4:
                         Member = _b;
                         if (!Member) {
-                            throw new common_1.HttpException('找不到該用戶！', common_1.HttpStatus.BAD_REQUEST);
+                            throw new common_1.HttpException('很抱歉，找不到該用戶！', common_1.HttpStatus.NOT_FOUND);
                         }
-                        return [3 /*break*/, 6];
+                        return [2 /*return*/, __assign(__assign({}, Member), { role: Member.role
+                                    .split(',')
+                                    .map(function (i) {
+                                    return Number(i);
+                                })
+                                    .sort(function (a, b) { return a - b; }) })];
                     case 5:
                         err_2 = _c.sent();
-                        throw new common_1.HttpException(err_2, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
-                    case 6: return [2 /*return*/, __assign(__assign({}, Member), { role: Member.role
-                                .split(',')
-                                .map(function (i) {
-                                return Number(i);
-                            })
-                                .sort(function (a, b) { return a - b; }) })];
+                        throw new common_1.HttpException(err_2, common_1.HttpStatus.BAD_REQUEST);
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    MemberService.prototype.updateMemberRole = function (id, updateData) {
+        return __awaiter(this, void 0, void 0, function () {
+            var member, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this.findMember(id)];
+                    case 1:
+                        member = _a.sent();
+                        if (!member) {
+                            throw new common_1.HttpException('找不到該用戶！', common_1.HttpStatus.NOT_FOUND);
+                        }
+                        updateData.role.forEach(function (i) {
+                            if (isNaN(Number(i))) {
+                                throw new common_1.HttpException('註冊失敗：權限設定有誤，請檢查後重新註冊！', common_1.HttpStatus.NOT_ACCEPTABLE);
+                            }
+                        });
+                        // 更新 member 的屬性
+                        member.role = updateData.role
+                            .map(function (i) {
+                            return Number(i);
+                        })
+                            .sort(function (a, b) { return a - b; });
+                        // ...
+                        // 執行保存或更新操作，例如：
+                        return [4 /*yield*/, this.memberRepository.save(__assign(__assign({}, member), { role: member.role.join(',') }))];
+                    case 2:
+                        // ...
+                        // 執行保存或更新操作，例如：
+                        _a.sent();
+                        delete member.password;
+                        return [2 /*return*/, member];
+                    case 3:
+                        err_3 = _a.sent();
+                        throw new common_1.HttpException('編輯失敗，請確認後再次編輯！', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    MemberService.prototype.updateMember = function (id, updateData) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function () {
+            var member, secretKey, decrypted, decryptedText, update, err_4;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this.findMember(id)];
+                    case 1:
+                        member = _b.sent();
+                        if (!member) {
+                            throw new common_1.HttpException('找不到該用戶！', common_1.HttpStatus.NOT_FOUND);
+                        }
+                        secretKey = 'mollymoooo';
+                        decrypted = updateData.password
+                            ? CryptoJS.AES.decrypt(updateData.password, secretKey)
+                            : '';
+                        decryptedText = decrypted === null || decrypted === void 0 ? void 0 : decrypted.toString(CryptoJS.enc.Utf8);
+                        update = {
+                            username: (_a = updateData.username) !== null && _a !== void 0 ? _a : member.username,
+                            password: updateData.password
+                                ? decryptedText
+                                    ? decryptedText
+                                    : updateData.password
+                                : member.password,
+                        };
+                        return [4 /*yield*/, this.memberRepository.save(__assign(__assign(__assign({}, member), update), { role: member.role.join(',') }))];
+                    case 2:
+                        _b.sent();
+                        delete member.password;
+                        if (update.password) {
+                            delete update.password;
+                        }
+                        return [2 /*return*/, __assign(__assign({}, member), update)];
+                    case 3:
+                        err_4 = _b.sent();
+                        throw new common_1.HttpException('編輯失敗，請確認後再次編輯！', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+                    case 4: return [2 /*return*/];
                 }
             });
         });

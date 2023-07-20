@@ -1,9 +1,9 @@
 export class MemberDto {
-  public readonly id?: number;
-  public readonly username: string;
-  readonly password: string;
+  public readonly id: number;
+  public username: string;
+  password: string;
   public readonly account: string;
-  public readonly role: number[];
+  public role: number[];
   public readonly created_at?: Date;
 }
 
@@ -14,8 +14,11 @@ export class CreateMemberDto {
   role: string;
 }
 
+export class UpdateMemberRoleDto {
+  role?: number[];
+}
+
 export class UpdateMemberDto {
-  role?: string;
   username?: string;
   password?: string;
 }

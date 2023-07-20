@@ -37,6 +37,7 @@ export class AuthService {
         HttpStatus.FORBIDDEN,
       );
     }
+
     // const { password, ...result } = user;
     // * Generate a JWT and return it here
     const payload = {

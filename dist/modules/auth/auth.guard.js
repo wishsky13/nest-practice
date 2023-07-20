@@ -47,21 +47,34 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthGuard = void 0;
 var common_1 = require("@nestjs/common");
+var core_1 = require("@nestjs/core");
 var jwt_1 = require("@nestjs/jwt");
 var constants_1 = require("./constants");
 var AuthGuard = /** @class */ (function () {
-    function AuthGuard(jwtService) {
+    function AuthGuard(reflector, jwtService) {
+        this.reflector = reflector;
         this.jwtService = jwtService;
     }
     AuthGuard.prototype.canActivate = function (context) {
         return __awaiter(this, void 0, void 0, function () {
-            var request, token, payload, _a;
+            var request, token, decoded, userRoles_1, roles, payload, _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         request = context.switchToHttp().getRequest();
                         token = this.extractTokenFromHeader(request);
                         if (!token) {
+                            throw new common_1.UnauthorizedException();
+                        }
+                        try {
+                            decoded = this.jwtService.verify(token);
+                            userRoles_1 = decoded.role;
+                            roles = this.reflector.get('roles', context.getHandler());
+                            if (roles && !roles.some(function (role) { return userRoles_1.includes(role); })) {
+                                throw new common_1.HttpException('權限不足！如有疑問請聯絡權限管理員。', common_1.HttpStatus.FORBIDDEN);
+                            }
+                        }
+                        catch (err) {
                             throw new common_1.UnauthorizedException();
                         }
                         _b.label = 1;
@@ -91,7 +104,8 @@ var AuthGuard = /** @class */ (function () {
     };
     AuthGuard = __decorate([
         (0, common_1.Injectable)(),
-        __metadata("design:paramtypes", [jwt_1.JwtService])
+        __metadata("design:paramtypes", [core_1.Reflector,
+            jwt_1.JwtService])
     ], AuthGuard);
     return AuthGuard;
 }());

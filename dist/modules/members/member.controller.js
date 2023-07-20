@@ -66,6 +66,8 @@ var member_service_1 = require("./member.service");
 var member_dto_1 = require("./dto/member.dto");
 var page_dto_1 = require("../../dtos/page.dto");
 var auth_guard_1 = require("../auth/auth.guard");
+var auth_decorator_1 = require("../auth/auth.decorator");
+var auth_interceptor_1 = require("../auth/auth.interceptor");
 var common_2 = require("@nestjs/common");
 exports.IS_PUBLIC_KEY = 'isPublic';
 var Public = function () { return (0, common_2.SetMetadata)(exports.IS_PUBLIC_KEY, true); };
@@ -89,8 +91,34 @@ var MemberController = /** @class */ (function () {
         });
     };
     MemberController.prototype.getProfile = function (req) {
-        var _a = req.member, iat = _a.iat, exp = _a.exp, userData = __rest(_a, ["iat", "exp"]);
-        return userData;
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, iat, exp, userData;
+            return __generator(this, function (_b) {
+                _a = req.member, iat = _a.iat, exp = _a.exp, userData = __rest(_a, ["iat", "exp"]);
+                return [2 /*return*/, userData];
+            });
+        });
+    };
+    MemberController.prototype.get = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.memberService.findMember(id)];
+            });
+        });
+    };
+    MemberController.prototype.updateMemberRole = function (id, update) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.memberService.updateMemberRole(id, update)];
+            });
+        });
+    };
+    MemberController.prototype.updateMember = function (id, update) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.memberService.updateMember(id, update)];
+            });
+        });
     };
     __decorate([
         (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
@@ -113,8 +141,36 @@ var MemberController = /** @class */ (function () {
         __param(0, (0, common_1.Request)()),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object]),
-        __metadata("design:returntype", void 0)
+        __metadata("design:returntype", Promise)
     ], MemberController.prototype, "getProfile", null);
+    __decorate([
+        (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+        (0, common_1.Get)(':id'),
+        __param(0, (0, common_1.Param)('id')),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object]),
+        __metadata("design:returntype", Promise)
+    ], MemberController.prototype, "get", null);
+    __decorate([
+        (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+        (0, auth_decorator_1.Roles)(1),
+        (0, common_1.Put)('/:id/role'),
+        __param(0, (0, common_1.Param)('id')),
+        __param(1, (0, common_1.Body)()),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [String, member_dto_1.UpdateMemberRoleDto]),
+        __metadata("design:returntype", Promise)
+    ], MemberController.prototype, "updateMemberRole", null);
+    __decorate([
+        (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+        (0, common_1.Put)(':id'),
+        (0, common_1.UseInterceptors)(auth_interceptor_1.AuthInterceptor),
+        __param(0, (0, common_1.Param)('id')),
+        __param(1, (0, common_1.Body)()),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [String, member_dto_1.UpdateMemberDto]),
+        __metadata("design:returntype", Promise)
+    ], MemberController.prototype, "updateMember", null);
     MemberController = __decorate([
         (0, common_1.Controller)('members'),
         __metadata("design:paramtypes", [member_service_1.MemberService])

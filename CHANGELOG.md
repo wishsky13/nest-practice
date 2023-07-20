@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 <!-- 以 master 為主 -->
 
+### [1.0.0] - 2023-07-20/ Molly
+
+- 新增 token 角色檢查
+- 新增 token 檢查是否為本人
+- 新增 編輯權限 api
+- 新增 編輯用戶資料 api
+
 ### [0.3.2] - 2023-07-18/ Molly
 
 - 更新 login 加入回覆 exp 
