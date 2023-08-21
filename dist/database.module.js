@@ -18,7 +18,7 @@ var DatabaseModule = /** @class */ (function () {
                 typeorm_1.TypeOrmModule.forRoot({
                     pluginName: 'mysql_native_password',
                     type: 'mysql',
-                    host: 'localhost',
+                    host: '127.0.0.1',
                     port: 3306,
                     username: 'root',
                     password: 'mollymoooo',

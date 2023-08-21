@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Member = void 0;
 var typeorm_1 = require("typeorm");
 var class_transformer_1 = require("class-transformer");
+var log_entity_1 = require("./log.entity");
 var Member = /** @class */ (function () {
     function Member() {
     }
@@ -40,6 +41,10 @@ var Member = /** @class */ (function () {
         (0, typeorm_1.CreateDateColumn)(),
         __metadata("design:type", Date)
     ], Member.prototype, "created_at", void 0);
+    __decorate([
+        (0, typeorm_1.OneToMany)(function () { return log_entity_1.Log; }, function (log) { return log.member; }),
+        __metadata("design:type", Array)
+    ], Member.prototype, "logs", void 0);
     Member = __decorate([
         (0, typeorm_1.Entity)()
     ], Member);

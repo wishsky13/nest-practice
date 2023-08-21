@@ -120,6 +120,13 @@ var MemberController = /** @class */ (function () {
             });
         });
     };
+    MemberController.prototype.getMemberLogs = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.memberService.getMemberWithLogs(id)];
+            });
+        });
+    };
     __decorate([
         (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
         (0, common_1.Get)(),
@@ -171,6 +178,15 @@ var MemberController = /** @class */ (function () {
         __metadata("design:paramtypes", [String, member_dto_1.UpdateMemberDto]),
         __metadata("design:returntype", Promise)
     ], MemberController.prototype, "updateMember", null);
+    __decorate([
+        (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+        (0, common_1.Get)('/:id/logs'),
+        (0, common_1.UseInterceptors)(auth_interceptor_1.AuthInterceptor),
+        __param(0, (0, common_1.Param)('id')),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [String]),
+        __metadata("design:returntype", Promise)
+    ], MemberController.prototype, "getMemberLogs", null);
     MemberController = __decorate([
         (0, common_1.Controller)('members'),
         __metadata("design:paramtypes", [member_service_1.MemberService])

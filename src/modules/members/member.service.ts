@@ -6,7 +6,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 import { Member } from '../../entity/member.entity';
 import {
   CreateMemberDto,
@@ -242,5 +242,26 @@ export class MemberService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async getMemberWithLogs(id: number | string): Promise<Member> {
+    let Member: Member;
+    try {
+      Member =
+        (await this.memberRepository.findOne({
+          where: { id: id as number },
+          relations: ['logs'],
+        })) ??
+        (await this.memberRepository.findOne({
+          where: { account: id as string },
+          relations: ['logs'],
+        }));
+      if (!Member) {
+        throw new HttpException('找不到該用戶！', HttpStatus.BAD_REQUEST);
+      }
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return Member;
   }
 }

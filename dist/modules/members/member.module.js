@@ -11,13 +11,14 @@ var common_1 = require("@nestjs/common");
 var member_controller_1 = require("./member.controller");
 var member_service_1 = require("./member.service");
 var member_entity_1 = require("../../entity/member.entity");
+var log_entity_1 = require("../../entity/log.entity");
 var typeorm_1 = require("@nestjs/typeorm");
 var MemberModule = /** @class */ (function () {
     function MemberModule() {
     }
     MemberModule = __decorate([
         (0, common_1.Module)({
-            imports: [typeorm_1.TypeOrmModule.forFeature([member_entity_1.Member])],
+            imports: [typeorm_1.TypeOrmModule.forFeature([member_entity_1.Member, log_entity_1.Log])],
             controllers: [member_controller_1.MemberController],
             providers: [member_service_1.MemberService],
         })

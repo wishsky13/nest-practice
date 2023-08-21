@@ -295,6 +295,43 @@ var MemberService = /** @class */ (function () {
             });
         });
     };
+    MemberService.prototype.getMemberWithLogs = function (id) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function () {
+            var Member, _b, err_5;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        _c.trys.push([0, 5, , 6]);
+                        return [4 /*yield*/, this.memberRepository.findOne({
+                                where: { id: id },
+                                relations: ['logs'],
+                            })];
+                    case 1:
+                        if (!((_a = (_c.sent())) !== null && _a !== void 0)) return [3 /*break*/, 2];
+                        _b = _a;
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, this.memberRepository.findOne({
+                            where: { account: id },
+                            relations: ['logs'],
+                        })];
+                    case 3:
+                        _b = (_c.sent());
+                        _c.label = 4;
+                    case 4:
+                        Member = _b;
+                        if (!Member) {
+                            throw new common_1.HttpException('找不到該用戶！', common_1.HttpStatus.BAD_REQUEST);
+                        }
+                        return [3 /*break*/, 6];
+                    case 5:
+                        err_5 = _c.sent();
+                        throw new common_1.HttpException(err_5, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+                    case 6: return [2 /*return*/, Member];
+                }
+            });
+        });
+    };
     MemberService = __decorate([
         (0, common_1.Injectable)(),
         __param(0, (0, typeorm_1.InjectRepository)(member_entity_1.Member)),

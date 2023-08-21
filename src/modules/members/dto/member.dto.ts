@@ -30,3 +30,12 @@ export class MemberDataDto {
   role: number[];
   created_at?: Date;
 }
+
+export class MemberLogListDto {
+  id?: number;
+  account: string;
+  username: string;
+  role: number[];
+  created_at?: Date;
+  list: any;
+}

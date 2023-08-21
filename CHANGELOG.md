@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 <!-- 以 master 為主 -->
 
+### [1.1.0] - 2023-08-15/ Molly
+
+- 新增 log table 並關聯至 member
+
 ### [1.0.0] - 2023-07-20/ Molly
 
 - 新增 token 角色檢查
@@ -13,7 +17,7 @@ All notable changes to this project will be documented in this file.
 
 ### [0.3.2] - 2023-07-18/ Molly
 
-- 更新 login 加入回覆 exp 
+- 更新 login 加入回覆 exp
 - 更新 me 回覆欄位移除 iat, exp
 - 新增 cors 設定
 

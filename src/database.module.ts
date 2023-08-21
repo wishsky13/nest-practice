@@ -7,7 +7,7 @@ import { ConnectionOptions } from 'typeorm';
     TypeOrmModule.forRoot({
       pluginName: 'mysql_native_password',
       type: 'mysql',
-      host: 'localhost', // 資料庫主機位址
+      host: '127.0.0.1', // 資料庫主機位址
       port: 3306, // 資料庫連接埠
       username: 'root', // 資料庫使用者名稱
       password: 'mollymoooo', // 資料庫使用者密碼

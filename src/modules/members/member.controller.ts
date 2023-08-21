@@ -23,6 +23,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { Roles } from '../auth/auth.decorator';
 import { AuthInterceptor } from '../auth/auth.interceptor';
 import { SetMetadata } from '@nestjs/common';
+import { Member } from '../../entity/member.entity';
 
 export const IS_PUBLIC_KEY = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
@@ -76,4 +77,16 @@ export class MemberController {
   async updateMember(@Param('id') id: string, @Body() update: UpdateMemberDto) {
     return this.memberService.updateMember(id, update);
   }
+
+  @UseGuards(AuthGuard)
+  @Get('/:id/logs')
+  @UseInterceptors(AuthInterceptor)
+  async getMemberLogs(@Param('id') id: string): Promise<Member> {
+    return this.memberService.getMemberWithLogs(id);
+  }
+
+  // @Get(':id')
+  // get(@Param('id') id: number | string) {
+  //   return this.memberService.findMember(id);
+  // }
 }

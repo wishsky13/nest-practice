@@ -3,9 +3,11 @@ import {
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
+  OneToMany,
+  JoinTable,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
-
+import { Log } from './log.entity';
 @Entity()
 export class Member {
   @PrimaryGeneratedColumn()
@@ -25,5 +27,8 @@ export class Member {
   role: string;
 
   @CreateDateColumn()
-  public created_at: Date;
+  public created_at?: Date;
+
+  @OneToMany(() => Log, (log) => log.member)
+  logs: Log[];
 }
